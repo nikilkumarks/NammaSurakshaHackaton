@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Officer Lookup</title>
+  <style>
+    body {
+      background-color: #2c3e50;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 30px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    select, button {
+      padding: 10px;
+      font-size: 1rem;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: none;
+      width: 100%;
+    }
+
+    select {
+      background-color: #34495e;
+      color: white;
+    }
+
+    button {
+      background-color: #1abc9c;
+      color: white;
+      cursor: pointer;
+    }
+
+    .result {
+      margin-top: 20px;
+      background: #ecf0f1;
+      color: #2c3e50;
+      padding: 20px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Officer Lookup</h1>
+    <select id="optionDropdown"></select>
+    <br>
+    <button onclick="fetchOfficer()">Get Data</button>
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    const dropdown = document.getElementById('optionDropdown');
+    for (let i = 1001; i <= 1050; i++) {
+      const opt = document.createElement('option');
+      opt.value = `O${i}`;
+      opt.text = `O${i}`;
+      dropdown.appendChild(opt);
+    }
+
+    function fetchOfficer() {
+      const code = dropdown.value;
+      fetch(`get_officer.php?code=${code}`)
+        .then(res => res.json())
+        .then(data => {
+          const div = document.getElementById('result');
+          if (data.length > 0) {
+            const officer = data[0];
+            div.innerHTML = `
+              <strong>Name:</strong> ${officer.officer_name}<br>
+              <strong>Badge #:</strong> ${officer.badge_number}<br>
+              <strong>Rank:</strong> ${officer.rank}<br>
+              <strong>Department:</strong> ${officer.department}<br>
+              <strong>Contact:</strong> ${officer.contact}<br>
+              <strong>Email:</strong> ${officer.email_id}
+            `;
+          } else {
+            div.textContent = "No data found for " + code;
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          document.getElementById('result').textContent = "Error fetching data.";
+        });
+    }
+  </script>
+</body>
+</html>

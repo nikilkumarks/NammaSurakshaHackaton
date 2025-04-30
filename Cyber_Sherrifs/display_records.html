@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Display Officer Records</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="karnatakapolicelogo copy.jpg">
+    <style>
+        .submit-button {
+            background-color: #4c96af;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .submit-button:hover {
+            background-color: #3b7d8e;
+            box-shadow: 0 3px 7px rgba(0,0,0,0.3);
+        }
+
+        .submit-button:active {
+            background-color: #2c5e6b;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Officer Records</h2>
+        <form action="display_records.php" method="POST">
+            <label for="officer_id">Officer ID:</label>
+            <input type="text" id="officer_id" name="officer_id" placeholder="Enter officer ID" required><br><br>
+
+            <label for="officer_name">Officer Name:</label>
+            <input type="text" id="officer_name" name="officer_name" placeholder="Enter officer name" required><br><br>
+
+            <label for="rank">Rank:</label>
+            <input type="text" id="rank" name="rank" placeholder="Enter officer rank(e.g Constable, Head Constable..)" required><br><br>
+
+            <label for="station_id">Station ID:</label>
+            <input type="text" id="station_id" name="station_id" placeholder="Enter station ID" required><br><br>
+
+            <label for="district">District:</label><br>
+            <select id="district" name="district" required onchange="populateStations()">
+                <option value="">Select District</option>
+                <option value="Bagalkot">Bagalkot</option>
+                <option value="Ballari">Ballari</option>
+                <option value="Belagavi">Belagavi</option>
+                <option value="Bengaluru Rural">Bengaluru Rural</option>
+                <option value="Bengaluru Urban">Bengaluru Urban</option>
+                <option value="Bidar">Bidar</option>
+                <option value="Chamarajanagar">Chamarajanagar</option>
+                <option value="Chikballapur">Chikballapur</option>
+                <option value="Chikkamagaluru">Chikkamagaluru</option>
+                <option value="Chitradurga">Chitradurga</option>
+                <option value="Dakshina Kannada">Dakshina Kannada</option>
+                <option value="Davanagere">Davanagere</option>
+                <option value="Dharwad">Dharwad</option>
+                <option value="Gadag">Gadag</option>
+                <option value="Hassan">Hassan</option>
+                <option value="Haveri">Haveri</option>
+                <option value="Kalaburagi">Kalaburagi</option>
+                <option value="Kodagu">Kodagu</option>
+                <option value="Kolar">Kolar</option>
+                <option value="Koppal">Koppal</option>
+                <option value="Mandya">Mandya</option>
+                <option value="Mysuru">Mysuru</option>
+                <option value="Raichur">Raichur</option>
+                <option value="Ramanagara">Ramanagara</option>
+                <option value="Shivamogga">Shivamogga</option>
+                <option value="Tumakuru">Tumakuru</option>
+                <option value="Udupi">Udupi</option>
+                <option value="Uttara Kannada">Uttara Kannada</option>
+                <option value="Vijayapura">Vijayapura</option>
+                <option value="Yadgir">Yadgir</option>
+            </select><br><br>
+
+            <label for="station_name">Station Name:</label><br>
+            <select id="station_name" name="station_name" required disabled>
+                <option value="">Select Station</option>
+            </select><br><br>
+
+            <input type="submit" value="Display Records" class = "submit-button">
+        </form>
+    </div>
+
+    <script>
+        
+        const stationsByDistrict = {
+            "Bagalkot": ["Bagalkot Police Station"],
+            "Ballari": ["Ballari District Police", "Hospet Town Police"],
+            "Belagavi": ["Belagavi City Police"],
+            "Bengaluru Rural": [],
+            "Bengaluru Urban": [
+                "Majestic Police Station", "Jayanagar Police Station", "Indiranagar Police Station",
+                "Malleswaram Police Station", "Koramangala Police Station", "Shivajinagar Police Station",
+                "Rajajinagar Police Station", "Yelahanka Police Station", "Whitefield Police Station",
+                "Electronic City Police Station", "Banashankari Police Station", "Vijayanagar Police Station",
+                "Basavanagudi Police Station"
+            ],
+            "Bidar": ["Bidar Police Station"],
+            "Chamarajanagar": [],
+            "Chikballapur": ["Chikkaballapur Police Station"],
+            "Chikkamagaluru": ["Chikkamagaluru Police Station"],
+            "Chitradurga": ["Chitradurga Police Station"],
+            "Dakshina Kannada": ["Puttur Town Police"],
+            "Davanagere": ["Davangere Police Station"],
+            "Dharwad": ["Dharwad Central Police"],
+            "Gadag": ["Gadag Town Police"],
+            "Hassan": ["Hassan Central Police", "Channarayapatna Police Station", "Shravanabelagola Police Station"],
+            "Haveri": ["Haveri Police Station"],
+            "Kalaburagi": ["Kalaburagi City Police"],
+            "Kodagu": ["Madikeri Police Station"],
+            "Kolar": ["Kolar District Police"],
+            "Koppal": [],
+            "Mandya": ["Mandya Police Station"],
+            "Mysuru": ["Mysuru South Police Station", "Mysuru North Police Station"],
+            "Raichur": ["Raichur Police Station"],
+            "Ramanagara": ["Ramanagara Police Station"],
+            "Shivamogga": ["Sagar Police Station", "Sirsi Town Police"],
+            "Tumakuru": ["Tumakuru City Police", "Tumkur South Police Station", "Tiptur Police Station"],
+            "Udupi": ["Udupi District Police", "Kundapura Police Station"],
+            "Uttara Kannada": ["Karwar District Police", "Dandeli Police Station", "Gokarna Police Station"],
+            "Vijayapura": ["Vijayapura City Police"],
+            "Yadgir": []
+        };
+
+        function populateStations() {
+            const districtSelect = document.getElementById("district");
+            const stationSelect = document.getElementById("station_name");
+            const selectedDistrict = districtSelect.value;
+
+            
+            stationSelect.innerHTML = '<option value="">Select Station</option>';
+
+            if (stationsByDistrict[selectedDistrict]) {
+                stationsByDistrict[selectedDistrict].forEach(stationName => {
+                    let option = document.createElement("option");
+                    option.value = stationName;
+                    option.textContent = stationName;
+                    stationSelect.appendChild(option);
+                });
+                stationSelect.disabled = false; 
+            } else {
+                stationSelect.disabled = true; 
+            }
+        }
+    </script>
+</body>
+</html>
